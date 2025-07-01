@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URP-25 | Khulna University</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --success: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.8;
+            color: #333;
+            background-color: #f9f9f9;
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 80px 0 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/swl8Frt.jpeg?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        
+        .header-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .logo p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        .batch-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .batch-info-item {
+            background-color: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .batch-info-item:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: var(--dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled {
+            background-color: rgba(26, 37, 47, 0.95);
+            padding: 10px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled .nav-container {
+            padding: 5px 0;
+        }
+        
+        .nav-logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .section-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .about-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .mission-vision {
+            margin-top: 40px;
+        }
+        
+        .mv-item {
+            margin-bottom: 30px;
+        }
+        
+        .mv-item h4 {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mv-item h4 i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        /* Program Details Section */
+        .program-details {
+            background-color: var(--light);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 40px;
+        }
+        
+        .program-details h3 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .program-details .info-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .program-details .info-section p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #444;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .program-details .info-section p strong {
+            width: 200px;
+            flex-shrink: 0;
+            color: var(--secondary);
+            margin-right: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .program-details .info-section p {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .program-details .info-section p strong {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+        
+        /* Members Section */
+        .members-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .coming-soon {
+            background-color: var(--light);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .coming-soon h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            height: 250px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover::after {
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .lightbox-content img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        /* Events Section */
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .events-table th, .events-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .events-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .events-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .events-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Blog Section */
+        .blog-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .blog-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .blog-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .blog-card:hover .blog-image img {
+            transform: scale(1.1);
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .blog-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .blog-content p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .read-more {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .read-more i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .read-more:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Contact Section */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .contact-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .contact-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .contact-card p {
+            color: #666;
+        }
+        
+        .contact-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        
+        .footer-column p {
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-posts {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--dark);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+                padding: 20px;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header-content {
+                padding: 0 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .batch-info-item {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .events-table {
+                font-size: 0.9rem;
+            }
+            
+            .events-table th, 
+            .events-table td {
+                padding: 10px;
+            }
+        }
+
+
+/* Member Directory with Images */
+.member-directory {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.member-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.member-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    text-align: center;
+    overflow: hidden;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+}
+
+.member-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 15px;
+    background-color: #f0f0f0; /* Background color for empty space */
+}
+
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Changed from cover to contain to prevent cropping */
+    transition: transform 0.3s ease;
+}
+
+.member-card:hover .member-image img {
+    transform: scale(1.05);
+}
+
+.member-card h3 {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.member-card p {
+    color: #666;
+    margin: 5px 0;
+    font-size: 0.95rem;
+}
+
+.member-card p strong {
+    color: var(--secondary);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .member-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .member-image {
+        height: 250px;
+    }
+
+    .member-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .member-card p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .member-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .member-image {
+        height: 300px;
+    }
+
+    .member-card {
+        padding: 10px;
+    }
+
+    .member-card h3 {
+        font-size: 1rem;
+    }
+}
+   
+
+/* Member Directory */
+.member-directory {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.member-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.member-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+}
+
+.member-card h3 {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.member-card p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.member-card p strong {
+    color: var(--secondary);
+}
+
+/* Responsive Styles */
+@media (max-width: 576px) {
+    .member-card {
+        padding: 15px;
+    }
+
+    .member-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .member-card p {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* Map Container in Footer */
+.map-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.map-container iframe {
+    width: 100%;
+    max-width: 300px;
+    height: 225px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.map-container iframe:hover {
+    transform: scale(1.02);
+}
+
+/* Responsive Styles for Map */
+@media (max-width: 576px) {
+    .map-container iframe {
+        max-width: 100%;
+        height: 180px;
+    }
+}
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <h1>URP-25 | Khulna University</h1>
+                <p>"Shaping Spaces, Shaping Futures"</p>
+            </div>
+            <div class="batch-info">
+                <div class="batch-info-item">Batch of 2025</div>
+                <div class="batch-info-item">40 Visionary Students</div>
+                <div class="batch-info-item">One Journey</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container nav-container">
+            <div class="nav-logo">URP-25</div>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#program-details">Program Details</a></li>
+                <li><a href="#members">Members</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Home Section -->
+    <section id="home" class="container">
+        <div class="section-title">
+            <h2>Welcome to URP-25</h2>
+        </div>
+        <div class="section-intro">
+            <p><i><b>The 35th batch of the Urban and Rural Planning Discipline, Khulna University</b></i></p>
+        </div>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <p>This is more than just the beginning of our academic journey — this is the beginning of a chapter in our lives that will stay with us forever. <br>
+                Though our classes commence in July 2025, the story of URP-25 has already begun. A story woven with new friendships, shared dreams, and the excitement of stepping into a world where we will learn to shape the environments people live, work, and grow in. This website stands as the digital home of our batch — a place to preserve our memories, celebrate our milestones, and reflect on our mission.
+<br>
+Here, you’ll find pieces of who we are — from our first steps as students to the heights we’ll reach as planners, thinkers, and changemakers. This platform will grow with us. It will carry our laughter, our lessons, our achievements, and our legacy.
+<br>
+We are the 35th batch of Urban and Rural Planning at Khulna University — a diverse group of individuals, united by a shared purpose: to design better futures, to imagine better places, and to build a better world.
+<br>
+Welcome to our journey. <br>
+Welcome to URP-25.
+
+
+            </p>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="container">
+        <div class="section-title">
+            <h2>About Us</h2>
+        </div>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1748381582/485136576_1199697295207905_3071295309508445630_n_hokjkm.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="URP Students">
+            </div>
+            <div class="about-text">
+                <h3>URP-25</h3>
+                <p> URP-25 is the 35th batch of students enrolled in the <b>Urban and Rural Planning Discipline</b> under the <b>School of Science, Engineering and Technology (SET)</b> at <b>Khulna University</b>, one of Bangladesh’s leading institutions for higher education in planning and design. Our academic journey began in <b>2025</b>, but our collective mission and identity are already taking shape.
+<br>
+We are a group of <b>40 students</b> — each with our own background, strengths, and stories — brought together by a shared commitment to shaping better spaces for people and the planet. We come from different corners of the country, bringing diverse perspectives and ideas to the table. What unites us is a passion for planning — not just as a profession, but as a responsibility to society.
+<br>
+Our studies cover a wide spectrum of disciplines — from urban design, transportation planning, and GIS to environmental planning, housing, and community development. But more than just theory, we are learning how to listen, engage, and co-create with the people whose lives our plans will touch.
+<br>
+This website is our digital home — a space to document our growth, showcase our work, and celebrate our milestones. It is a reflection of our identity as the URP-25 family — creative, collaborative, and committed to making a difference.
+                </p>
+                <div class="mission-vision">
+                    <div class="mv-item">
+                        <h4><i class="fas fa-bullseye"></i> Our Mission</h4>
+                        <p>To build a community of socially responsible and forward-thinking planners who are equipped to address the spatial, social, and environmental challenges of today and tomorrow.
+<br>
+                            We aim to blend <b>innovation, critical thinking</b>, and <b>compassion</b> in our approach to planning — ensuring that the spaces we design are not just efficient, but equitable and meaningful.
+                        </p>
+                    </div>
+                    <div class="mv-item">
+                        <h4><i class="fas fa-eye"></i> Our Vision</h4>
+                        <p>
+                            To be catalysts for sustainable change — <br>
+Creating cities that are smarter and more inclusive, rural areas that are resilient and vibrant, and communities that are empowered and connected. <br>
+We envision a future where planning is not just about structures, but about <b>people, purpose,</b> and <b>possibility.</b>
+
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Program Details Section -->
+    <section id="program-details" class="container">
+        <div class="section-title">
+            <h2>Program Details</h2>
+        </div>
+        <div class="section-intro">
+            <p>Overview of the Bachelor of Urban and Rural Planning program at Khulna University.</p>
+        </div>
+        <div class="program-details">
+            <h3>Bachelor of Urban and Rural Planning</h3>
+            <div class="info-section">
+                <p><strong>Degree:</strong> Bachelor of Urban and Rural Planning</p>
+                <p><strong>Abbreviation of the Degree (POE):</strong> BURP</p>
+                <p><strong>Discipline/Program Offering Entity:</strong> Urban and Rural Planning</p>
+                <p><strong>School:</strong> Science, Engineering and Technology School</p>
+                <p><strong>Awarding Institution:</strong> Khulna University</p>
+                <p><strong>Location:</strong> Khulna, Bangladesh</p>
+                <p><strong>Bangladesh National Qualifications Framework (BNQF) Level:</strong> 7</p>
+                <p><strong>International Standard Classification of Education (ISCED) Code:</strong> 0731</p>
+                <p><strong>Mode of Study:</strong> Full Time</p>
+                <p><strong>Language of Study:</strong> English</p>
+            </div>
+        </div>
+    </section>
+    
+
+
+
+
+<!-- Members Section -->
+<section id="members" class="container">
+    <div class="section-title">
+        <h2>Meet the Planners</h2>
+    </div>
+    <div class="members-intro">
+        <p>40 Students | 40 Stories | One Vision</p>
+        <p>From every corner of Bangladesh, we come together with unique backgrounds, shared goals, and an unshakable curiosity.</p>
+    </div>
+    <div class="member-directory">
+        <div class="member-grid">
+            <!-- Member 1 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1748378442/20250216_215337_1_rdx5hy.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Gobinda Nag Arpa">
+                </div>
+                <h3>Gobinda Nag Arpa</h3>
+                <p><strong>Hometown:</strong> Sarail, Brahmanbaria</p>
+                <p><strong>About:</strong> A tech enthusiast with a passion for urban sustainability, Arpa dreams of designing smart cities.</p>
+            </div>
+            <!-- Member 2 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://i.imgur.com/brV6fM7.jpeg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Samin Aarian">
+                </div>
+                <h3>Samin Aarian</h3>
+                <p><strong>Hometown:</strong> 297 East Rampura, Dhaka</p>
+                <p><strong>About:</strong> Driven by a strong passion for URP, I aim to engage with its diverse facets of design and planning, fostering a humble and encouraging environment in my work</p>
+            </div>
+           <!-- Member 3 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://i.imgur.com/hPZ8723.jpeg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Irfan Reza Utshab">
+                </div>
+                <h3>Irfan Reza Utshab</h3>
+                <p><strong>Hometown:</strong> Patenga, Chattogram</p>
+                <p><strong>About:</strong> Irfan is a soul who longs to touch the hearts of every person in villages and cities alike. Through his love for URP, he dreams of bringing beauty and harmony to every corner.</p>
+            </div>
+            <!-- Member 4 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://i.imgur.com/IzIS6Pj.jpeg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Samin Yasar Bhuiyan">
+                </div>
+                <h3>Samin Yasar Bhuiyan</h3>
+                <p><strong>Hometown:</strong> S.Machimpur, Shibpur, Narsingdi</p>
+                <p><strong>About:</strong> URP helps students understand their role in building a responsible and sustainable society. It encourages ethical behavior, teamwork, and respect for others in everyday actions.</p>
+            </div>
+             <!-- Member 5 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750252808/f4b488b5-6c30-48f4-84e1-42e6f21f17d6_dqdyon.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Minhaz Zeyon">
+                </div>
+                <h3>Minhaz Zeyon</h3>
+                <p><strong>Hometown:</strong> Dhaka Cantonment</p>
+                <p><strong>About:</strong> Keep smiling and build happiness. </p>
+            </div>
+             <!-- Member 6 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750255630/IMG_7100_-_Shoily_Barman_l663to.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Shoily Barman">
+                </div>
+                <h3>Shoily Barman</h3>
+                <p><strong>Hometown:</strong> Rajshahi</p>
+                <p><strong>About:</strong> Passionate and desirous about designing like designing buildings or cities. Also I am a classical dancer since childhood and besides try Bollywood and others sometimes. </p>
+            </div>
+             <!-- Member 7 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750256524/inbound9070580236070311147_-_Humayra_Ahona_twg935.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Humayra Rashid Ahona">
+                </div>
+                <h3>Humayra Rashid Ahona</h3>
+                <p><strong>Hometown:</strong> Khulna</p>
+                <p><strong>About:</strong> Dreams of becoming GIS specialist or Environmental planner. Wanna analyze data (population, environmental studies)and collaborate with stakeholders to create sustainability. </p>
+            </div>
+             <!-- Member 8 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750256764/IMG_20241112_173900_-_Chayon_Mondol_a1oe9j.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Chayon Dip Mondol">
+                </div>
+                <h3>Chayon Dip Mondol</h3>
+                <p><strong>Hometown:</strong> Keshabpur, Jessore</p>
+                <p><strong>About:</strong> A common boy who wanted to develop his skills for future.  </p>
+            </div>
+
+ <!-- Member 9 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750256827/IMG-20250602-WA0082_-_Swagoto_Hridan_Khan_igjvev.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Swagoto Hridan Khan">
+                </div>
+                <h3>Swagoto Hridan Khan</h3>
+                <p><strong>Hometown:</strong> Courtpara, Kushtia, Khulna</p>
+                <p><strong>About:</strong> A tech enthusiast with a passion for urban sustainability, Swagoto dreams of designing smart cities.</p>
+            </div>
+            <!-- Member 10 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750256984/rakibul_hasan_sagor_-_Dark_Man_mzb1bd.png?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Rakibul Hasan Sagor">
+                </div>
+                <h3>Rakibul Hasan Sagor</h3>
+                <p><strong>Hometown:</strong> Rajbari</p>
+                <p><strong>About:</strong> CSE pai nai URP paichi. Tai portechi.</p>
+            </div>
+            <!-- Member 11 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1750257574/484343986_680492244503793_8471572720560668850_n_-_ETHUN_009_mfbn7m.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Ethun Pandey (Noyon)">
+                </div>
+                <h3>Ethun Pandey (Noyon)</h3>
+                <p><strong>Hometown:</strong> Kotalipara , Gopalganj</p>
+                <p><strong>About:</strong> I’m passionate about coding and love building creative solutions through technology. My goal is to become a skilled software developer and make a meaningful impact in the tech world.</p>
+            </div>
+            <!-- Member 12 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751366832/Mimma_-_Mimma_Biswas_upcy9g.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Mst. Mimma khatun">
+                </div>
+                <h3>Mst. Mimma khatun</h3>
+                <p><strong>Hometown:</strong> Shibganj, Chapainawabganj</p>
+                <p><strong>About:</strong> Allah is the best planner and I also want to become a little planner .l love nature so l want to make our country beautiful with nature beauty </p>
+            </div>
+
+<!-- Member 13 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751367054/Md._Jalal_Uddin_-_Abik_Home_jjzzn7.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Md. Jalal Uddin ">
+                </div>
+                <h3>Md. Jalal Uddin </h3>
+                <p><strong>Hometown:</strong> Khulshi, Chattogram</p>
+                <p><strong>About:</strong> Not interested in non-engineering subjects and preferred URP over solid subjects. Hopeful of not being an unemployed.</p>
+            </div>
+
+<!-- Member 14 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751367207/inbound2847616213024635806_-_Suborna_Mostofa_1_fa6k9r.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Suborna Mostofa Fatema">
+                </div>
+                <h3>Suborna Mostofa Fatema</h3>
+                <p><strong>Hometown:</strong> Daulatpur, Kushtia</p>
+                <p><strong>About:</strong> I am a simple, friendly and a curious person.I have dream of doing something great in the near future </p>
+            </div>
+
+<!-- Member 15 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751367349/inbound1028859696725275074_-_Rico_Mondol_pf1s9d.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Rico Mondol">
+                </div>
+                <h3>Rico Mondol </h3>
+                <p><strong>Hometown:</strong> Naogaon sadar, Naogaon</p>
+                <p><strong>About:</strong> I want to achieve success in life through studying URP, because right now URP is my only asset and a true friend in times of trouble.</p>
+            </div>
+<!-- Member 16 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751367471/inbound636516388356478425_-_Tasnim_Shoily_ev6me9.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Jarin Tasnim Shoily">
+                </div>
+                <h3>Jarin Tasnim Shoily</h3>
+                <p><strong>Hometown:</strong> Khulna</p>
+                <p><strong>About:</strong> Passionate to make innovative designs and be connected with every sphere of people of urban and rural to plan a community as a planner </p>
+            </div>
+
+<!-- Member 17 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751371452/Akib_-_Sheikh_Akib_Ahmed_fgdw52.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Sk Akib Ahmed">
+                </div>
+                <h3>Sk Akib Ahmed</h3>
+                <p><strong>Hometown:</strong> Satkhira, Khulna</p>
+                <p><strong>About:</strong> Nothing interested to tell about. </p>
+            </div>
+
+<!-- Member 18 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751372169/1750263240021_-_Oyshi_Debnath_qyicf8.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Joita Debnath Oyshi">
+                </div>
+                <h3>Joita Debnath Oyshi </h3>
+                <p><strong>Hometown:</strong> Bagerhat</p>
+                <p><strong>About:</strong>  I’m a URP student with big dreams in my eyes and endless love in my heart.</p>
+            </div>
+
+<!-- Member 19 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751372480/inbound7828667304395096217_-_Samiur_Fahim_yu3bl4.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Samiur Rahman Fahim">
+                </div>
+                <h3>Samiur Rahman Fahim</h3>
+                <p><strong>Hometown:</strong> Pabna</p>
+                <p><strong>About:</strong> Never lose hope.</p>
+            </div>
+
+<!-- Member 20 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751372641/IMG-20230805-WA0026_-_mohatasin_mobin_daaxgx.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Mohatasin Mobin Mollah">
+                </div>
+                <h3>Mohatasin Mobin Mollah</h3>
+                <p><strong>Hometown:</strong> North Chayabithi, Joydebpur, Gazipur</p>
+                <p><strong>About:</strong> Designing and managing transportation systems.</p>
+            </div>
+
+<!-- Member 21 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751372821/Shezan_-_Shaharia_Nafiz_Shezan_y8bqgw.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Md Shaharia Nafiz Shezan">
+                </div>
+                <h3>Md Shaharia Nafiz Shezan</h3>
+                <p><strong>Hometown:</strong> Mymensingh </p>
+                <p><strong>About:</strong>  A true sports enthusiast, excelling in football, cricket, and badminton.</p>
+            </div>
+
+<!-- Member 22 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751373105/IMG-20250223-WA0212_-_Fahim_Ahmed_hr7ora.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Fahim Ahmed">
+                </div>
+                <h3>Fahim Ahmed </h3>
+                <p><strong>Hometown:</strong> Afratpara, Chatmohor, Pabna</p>
+                <p><strong>About:</strong> A reader, who likes to explore fantasies and wish creat one of them someday.</p>
+            </div>
+
+<!-- Member 23 -->
+            <div class="member-card">
+                <div class="member-image">
+                    <img src="https://res.cloudinary.com/dd65mkbv8/image/upload/v1751372169/1750263240021_-_Oyshi_Debnath_qyicf8.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Taskia Ferdous">
+                </div>
+                <h3>Taskia Ferdous</h3>
+                <p><strong>Hometown:</strong> Satkhira</p>
+                <p><strong>About:</strong> As I want to be a planner, I choose URP</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <!-- Gallery Section -->
+    <section id="gallery" class="container">
+        <div class="section-title">
+            <h2>Moments & Memories</h2>
+        </div>
+        <div class="section-intro">
+            <p>A journey worth remembering, one frame at a time.</p>
+            <p>Our gallery will showcase our growth — from the excitement of admission day, the laughter of orientation, to the challenges and joy of fieldwork, studio projects, and friendships.</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Gallery Item">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Gallery Item">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1541178735493-479c1a27ed24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80" alt="Gallery Item">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1349&q=80" alt="Gallery Item">
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <p><strong>Gallery launching after July 2025</strong></p>
+        </div>
+    </section>
+    
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="close-lightbox" id="closeLightbox">×</span>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="Lightbox Image">
+        </div>
+    </div>
+    
+    <!-- Events Section -->
+    <section id="events" class="container">
+        <div class="section-title">
+            <h2>Events & Activities</h2>
+        </div>
+        <div class="section-intro">
+            <p>Stay tuned — the journey is just beginning.</p>
+        </div>
+        <table class="events-table">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Orientation Ceremony</td>
+                    <td>July 2025</td>
+                    <td>Official welcome by the discipline</td>
+                </tr>
+                <tr>
+                    <td>First Class Day</td>
+                    <td>July 2025</td>
+                    <td>Beginning of academic life</td>
+                </tr>
+            
+            </tbody>
+        </table>
+    </section>
+    
+    <!-- Blog Section -->
+    <section id="blog" class="container">
+        <div class="section-title">
+            <h2>Voices of URP-25</h2>
+        </div>
+        <div class="section-intro">
+            <p>A platform to reflect, write, and connect.</p>
+            <p>Through blogs and journals, we'll share the thoughts that inspire us, the experiences that shape us, and the goals that drive us.</p>
+        </div>
+        <div class="blog-posts">
+            <div class="blog-card">
+    <div class="blog-image">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Why URP">
+    </div>
+    <div class="blog-content">
+        <h3>Why URP?</h3>
+        <p class="blog-text">Urban and Rural Planning is more than just shaping cities or mapping rural spaces — it's about shaping lives. We chose URP because it stands at the intersection of vision and reality, where big ideas meet everyday needs. It’s where creativity blends with logic, where we don’t just dream of better communities — we build them. 
+            <span class="full-text" style="display: none;">To us, URP means responsibility and hope. It means having the power to design spaces that are inclusive, sustainable, and resilient. It's about listening to the land, understanding the people, and weaving both into a future that works for everyone.
+
+URP gives us a purpose — to solve real-world challenges, to reimagine what's possible, and to leave behind a legacy of thoughtful planning and meaningful change.
+
+Because planning isn’t just about places — it’s about people.</span></p>
+        <a href="#" class="read-more" onclick="toggleText(this); return false;">Read More <i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
+            <div class="blog-card">
+    <div class="blog-image">
+        <img src="https://i.imgur.com/BA1kx49.jpeg?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="First Impressions">
+    </div>
+    <div class="blog-content">
+        <h3>First Impressions of KU</h3>
+        <p class="blog-text"><i>A university in the heart of nature — calm, green, and full of promise.</i> <br>
+                Khulna University welcomed us with more than just its scenic beauty. From the thoughtful architecture to the peaceful surroundings, every detail reflects a space built for learning and growth. Here, silence is not emptiness — it’s a quiet strength that inspires focus and reflection. <span class="full-text" style="display: none;">What sets KU apart is its freedom — no student politics, no session delays. Time moves forward here, just as we do. It’s a place where education flows without interruption, where unity matters more than division.
+
+In this serene environment and welcoming community, we’ve found the perfect beginning — not just for academic life, but for becoming the best version of ourselves.</span></p>
+        <a href="#" class="read-more" onclick="toggleText(this); return false;">Read More <i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
+            <div class="blog-card">
+    <div class="blog-image">
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Planning Future">
+    </div>
+    <div class="blog-content">
+        <h3>Planning for the Future</h3>
+        <p class="blog-text">"We don't wait for the future — we plan for it." What kind of spaces do we want to create? <span class="full-text" style="display: none;">How do we balance development and sustainability? As future planners, we aim to build resilient cities and rural areas that thrive for generations to come.</span></p>
+        <a href="#" class="read-more" onclick="toggleText(this); return false;">Read More <i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="container">
+        <div class="section-title">
+            <h2>Contact Us</h2>
+        </div>
+        <div class="contact-info">
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Email</h3>
+                <p>urp.34.ku.official@gmail.com</p>
+                <a href="mailto:urp.34.ku.official@gmail.com" class="contact-link">Send Message</a>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Messenger Chat</h3>
+                <p>Connect with us directly</p>
+                <a href="https://m.me/j/Abak94wxcKXrDGCq/" class="contact-link">Join Chat</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Location</h3>
+                <p>Urban and Rural Planning Discipline, Khulna University, Bangladesh</p>
+                <a href="https://maps.app.goo.gl/J5yVSJcSWpBPUvtH9" class="contact-link">View Map</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-column">
+                <h3>URP-25</h3>
+                <p>The 35th batch of Urban and Rural Planning Discipline at Khulna University, committed to shaping sustainable spaces and communities.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/ku.ac.bd.official"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/kuacbdOfficial"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.youtube.com/@khulnauniversityofficial"><i class="fab fa-youtube"></i></a>
+                    <a href="https://bd.linkedin.com/school/khulna-university/"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <p><a href="#home" style="color: white; text-decoration: none;">Home</a></p>
+                <p><a href="#about" style="color: white; text-decoration: none;">About Us</a></p>
+                <p><a href="#program-details" style="color: white; text-decoration: none;">Program Details</a></p>
+                <p><a href="#events" style="color: white; text-decoration: none;">Events</a></p>
+                <p><a href="https://ku.ac.bd" style="color: white; text-decoration: none;">Khulna University Official Website</a></p>
+                <p><a href="https://ku.ac.bd/discipline/urp" style="color: white; text-decoration: none;">URP Discipline Official Website</a></p>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-envelope" style="margin-right: 10px;"></i>urp.34.ku.official@gmail.com</p>
+                <p><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> Urban and Rural Planning Discipline, Khulna University, Bangladesh</p>
+                <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d58847.83118912361!2d89.49389569143007!3d22.802854832710242!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff854948b34b5b%3A0x911f7694caaef5bc!2sUrban%20%26%20Rural%20Planning%20Discipline!5e0!3m2!1sen!2sbd!4v1748278141200!5m2!1sen!2sbd" width="300" height="225" style="border:0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            
+            </div>
+        </div>
+        <div class="container copyright">
+            <p>Designed & Developed by URP-25 Tech Team</p>
+            <p>Last updated: <span id="lastUpdated"></span></p>
+            <p>© 2025 URP-25, Khulna University. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+        if (navLinks.classList.contains('active')) {
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            navLinks.classList.remove('active');
+        }
+            });
+        });
+        
+        // Header animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const headerContent = document.querySelector('.header-content');
+            headerContent.classList.add('visible');
+        });
+        
+        // Scroll animations for sections
+        const sections = document.querySelectorAll('section');
+        
+        function checkScroll() {
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (sectionTop < windowHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        const navLinks = document.getElementById('navLinks');
+        const hamburger = document.getElementById('hamburger');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // Active nav link highlighting
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+            
+            // Back to top button
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        // Mobile menu toggle
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            if (navLinks.classList.contains('active')) {
+                hamburger.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+        
+        // Lightbox functionality for gallery
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const closeLightbox = document.getElementById('closeLightbox');
+        
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').getAttribute('src');
+                lightboxImage.setAttribute('src', imgSrc);
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        closeLightbox.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Back to top button functionality
+        document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Form submission handling (example)
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Thank you for your message! We will get back to you soon.');
+                contactForm.reset();
+            });
+        }
+
+        function toggleText(element) {
+    const textContainer = element.previousElementSibling;
+    const fullText = textContainer.querySelector('.full-text');
+    const readMoreIcon = element.querySelector('i');
+
+    if (fullText.style.display === 'none') {
+        fullText.style.display = 'inline';
+        element.textContent = 'Read Less ';
+        readMoreIcon.classList.remove('fa-arrow-right');
+        readMoreIcon.classList.add('fa-arrow-up');
+    } else {
+        fullText.style.display = 'none';
+        element.textContent = 'Read More ';
+        readMoreIcon.classList.remove('fa-arrow-up');
+        readMoreIcon.classList.add('fa-arrow-right');
+    }
+}
+    </script>
+    <script>
+        document.getElementById('lastUpdated').textContent = new Date(document.lastModified).toLocaleDateString();
+    </script>
+</body>
+</html>
